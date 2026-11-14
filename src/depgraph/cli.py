@@ -8,6 +8,7 @@ from depgraph.config import load_config
 from depgraph.errors import DepGraphError
 from depgraph.graph import build_graph
 from depgraph.maven import MavenSource
+from depgraph.mermaid import to_mermaid
 from depgraph.order import find_cycle_edges, load_order
 from depgraph.testrepo import load_repository_file
 
@@ -56,11 +57,18 @@ def show_order(config, get_deps):
     return lines
 
 
+def show_mermaid(config, get_deps):
+    """Граф зависимостей на языке диаграмм Mermaid."""
+    graph = build_graph(config.package, get_deps, config.filter_substring)
+    return [to_mermaid(graph)]
+
+
 HANDLERS = {
     "config": show_config,
     "direct": show_direct,
     "graph": show_graph,
     "order": show_order,
+    "mermaid": show_mermaid,
 }
 
 

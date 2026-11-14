@@ -1,4 +1,4 @@
-CONFIG ?= examples/maven-central.ini
+CONFIG ?= examples/httpclient.ini
 SHOW ?= graph
 
 .PHONY: run test
