@@ -5,6 +5,7 @@ import sys
 
 from depgraph.config import load_config
 from depgraph.errors import DepGraphError
+from depgraph.maven import MavenSource
 
 EXIT_OK = 0
 EXIT_ERROR = 1
@@ -17,8 +18,14 @@ def show_config(config, get_deps):
     return [f"{key} = {value}" for key, value in config.as_pairs()]
 
 
+def show_direct(config, get_deps):
+    """Прямые зависимости заданного пакета."""
+    return get_deps(config.package)
+
+
 HANDLERS = {
     "config": show_config,
+    "direct": show_direct,
 }
 
 
@@ -39,10 +46,15 @@ def parse_args(argv):
     return parser.parse_args(argv)
 
 
+def make_get_deps(config):
+    """Функция «имя пакета -> список имён прямых зависимостей»."""
+    return MavenSource(config.repository).dependencies
+
+
 def run(args):
     """Выполнить выбранный режим и вернуть строки вывода."""
     config = load_config(args.config)
-    return HANDLERS[args.show](config, None)
+    return HANDLERS[args.show](config, make_get_deps(config))
 
 
 def main(argv=None):

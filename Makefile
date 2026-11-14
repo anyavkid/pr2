@@ -7,4 +7,4 @@ run:
 	PYTHONPATH=src python3 -m depgraph --config $(CONFIG) --show $(SHOW)
 
 test:
-	PYTHONPATH=src python3 -m unittest discover -s tests -v
+	PYTHONPATH=src:tests python3 -m unittest discover -s tests -v
