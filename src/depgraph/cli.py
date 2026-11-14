@@ -8,12 +8,14 @@ from depgraph.config import load_config
 from depgraph.errors import DepGraphError
 from depgraph.graph import build_graph
 from depgraph.maven import MavenSource
+from depgraph.order import find_cycle_edges, load_order
 from depgraph.testrepo import load_repository_file
 
 EXIT_OK = 0
 EXIT_ERROR = 1
 DEFAULT_CONFIG = "config.ini"
 DEFAULT_MODE = "graph"
+FIRST_NUMBER = 1
 
 
 def show_config(config, get_deps):
@@ -41,10 +43,24 @@ def show_graph(config, get_deps):
     return format_graph(graph)
 
 
+def show_order(config, get_deps):
+    """Порядок загрузки: сначала зависимости, в конце сам пакет."""
+    graph = build_graph(config.package, get_deps, config.filter_substring)
+    order = load_order(graph, config.package)
+    lines = [
+        f"{number}. {name}"
+        for number, name in enumerate(order, FIRST_NUMBER)
+    ]
+    for source, target in find_cycle_edges(graph, config.package):
+        lines.append(f"Цикл: {source} -> {target} (ребро пропущено)")
+    return lines
+
+
 HANDLERS = {
     "config": show_config,
     "direct": show_direct,
     "graph": show_graph,
+    "order": show_order,
 }
 
 
