@@ -40,8 +40,8 @@ class MermaidTest(unittest.TestCase):
 class CliTest(unittest.TestCase):
     """Запуск main() целиком."""
 
-    def setUp(self):
-        """Подготовить временную папку."""
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
         self._dir = tempfile.TemporaryDirectory()
         self.addCleanup(self._dir.cleanup)
         self.root = Path(self._dir.name)

@@ -1,6 +1,6 @@
 """Разбор pom.xml без сторонних библиотек."""
 import re
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as element_tree
 from dataclasses import dataclass, field
 
 from depgraph.errors import SourceError
@@ -112,8 +112,8 @@ def _parse_managed(root):
 def parse_pom(data):
     """Разобрать содержимое pom.xml (bytes) в объект Pom."""
     try:
-        root = ET.fromstring(data)
-    except ET.ParseError as error:
+        root = element_tree.fromstring(data)
+    except element_tree.ParseError as error:
         raise SourceError(f"некорректный pom.xml: {error}") from error
     parent = _parse_parent(root)
     return Pom(
